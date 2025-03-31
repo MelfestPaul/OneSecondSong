@@ -99,5 +99,8 @@ async function playOneSecond() {
     document.getElementById("songInfo").innerText = `Jetzt spielt: ${track.name} von ${track.artists.map(a => a.name).join(", ")}`;
 }
 
+// Event-Listener für den Button
+document.getElementById("playButton").addEventListener("click", playOneSecond);
+
 // 6️⃣ **Beim Laden der Seite Token abrufen**
 getAccessToken();
