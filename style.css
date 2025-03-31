@@ -1,0 +1,37 @@
+/* Grundlegendes Styling für den Body */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1DB954; /* Spotify-Grün */
+    color: white;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    padding: 50px;
+}
+
+h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+button {
+    background-color: white;
+    color: #1DB954;
+    font-size: 20px;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #1ed760;
+}
+
+#songInfo {
+    margin-top: 20px;
+    font-size: 18px;
+}
