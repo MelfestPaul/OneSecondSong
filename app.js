@@ -10,6 +10,7 @@ const songInfo = document.getElementById("songInfo");
 const durationSlider = document.getElementById("durationSlider");
 const durationLabel = document.getElementById("durationLabel");
 const playingTime = document.getElementById("playingTime");
+playingTime.textContent = `$1 second(s)`;
 
 // 1. Spotify Authentifizierung (Implicit Grant Flow)
 function getAccessToken() {
@@ -135,7 +136,7 @@ async function playOneSecond() {
 
 // Dauer-Label aktualisieren
 durationSlider.addEventListener("input", () => {
-    playingTime.textContent = `${(durationSlider.value).toFixed(3)} seconds`;
+    playingTime.textContent = `${durationSlider.value} second(s)`;
 });
 
 // 5. Event-Listener für den Button
