@@ -141,7 +141,7 @@ playButton.addEventListener("click", () => {
 revealButton.addEventListener("click", () => {
     console.log("✔️❌❔ Reveal-Button wurde geklickt!");
     songInfo.style.display = "block";
-    songInfo.textContent = `Jetzt spielte`//: ${currentTrack.name} von ${currentTrack.artists.map(a => a.name).join(", ")}`;
+    songInfo.textContent = `Jetzt spielte ${track.name} von ${track.artists.map(a => a.name).join(", ")}`;
 });
 
 // 6. Beim Laden der Seite den Access Token abrufen
