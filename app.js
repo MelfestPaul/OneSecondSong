@@ -133,7 +133,7 @@ async function playOneSecond() {
 // 5. Event-Listener für den Button
 playButton.addEventListener("click", () => {
   console.log("🎵 Play-Button wurde geklickt!");
-  revealButton.textContent = none;
+  //revealButton.textContent = none;
   playOneSecond();
 });
 
