@@ -6,8 +6,9 @@ let track;
 
 const playButton = document.getElementById("playButton");
 const revealButton = document.getElementById("revealButton");
-const durationSlider = document.getElementById("durationSlider");
 const songInfo = document.getElementById("songInfo");
+const durationSlider = document.getElementById("durationSlider");
+const durationLabel = document.getElementById("durationLabel");
 
 // 1. Spotify Authentifizierung (Implicit Grant Flow)
 function getAccessToken() {
