@@ -41,21 +41,33 @@ window.onSpotifyWebPlaybackSDKReady = () => {
 
     player.addListener("ready", ({ device_id }) => {
         console.log("✅ Player ist bereit, Device ID:", device_id);
-        deviceId = device_id;
-        transferPlayback();
-        document.getElementById("playButton").disabled = false; // Button aktivieren
+        deviceId = device_id; // **Hier setzen wir die deviceId!**
+        transferPlayback(); // **Sobald der Player bereit ist, setzen wir die Wiedergabe auf unser Gerät**
     });
-    
 
     player.addListener("not_ready", ({ device_id }) => {
         console.log("❌ Player nicht bereit, Device ID:", device_id);
     });
 
-    player.connect();
+    player.connect().then(success => {
+        if (success) {
+            console.log("🔗 Verbindung zum Player erfolgreich!");
+        } else {
+            console.error("❌ Verbindung zum Player fehlgeschlagen!");
+        }
+    });
 };
+
 
 // 3️⃣ **Spotify-Wiedergabe auf unser Gerät umstellen**
 function transferPlayback() {
+    if (!deviceId) {
+        console.error("❌ Fehler: Keine deviceId vorhanden! Kann die Wiedergabe nicht übertragen.");
+        return;
+    }
+
+    console.log("🔄 Versuche, die Wiedergabe auf das neue Gerät zu übertragen...");
+
     fetch("https://api.spotify.com/v1/me/player", {
         method: "PUT",
         headers: {
@@ -63,8 +75,15 @@ function transferPlayback() {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({ device_ids: [deviceId], play: true })
-    }).catch(err => console.error("Fehler beim Übertragen der Wiedergabe:", err));
+    }).then(response => {
+        if (response.ok) {
+            console.log("✅ Wiedergabe erfolgreich übertragen!");
+        } else {
+            console.error("❌ Fehler beim Übertragen der Wiedergabe:", response.status);
+        }
+    }).catch(err => console.error("❌ Netzwerkfehler beim Übertragen der Wiedergabe:", err));
 }
+
 
 // 4️⃣ **Zufälligen Song aus der Playlist abrufen**
 async function getRandomSong() {
