@@ -142,7 +142,7 @@ durationSlider.addEventListener("input", () => {
 });
 
 // Playlist aktualisieren
-playlist.addEventListener("input", () => {
+playlist.addEventListener("select", () => {
     var text = playlist.options[playlist.selectedIndex].text;
     playingTime.textContent = "hallo";
     switch (text) {
