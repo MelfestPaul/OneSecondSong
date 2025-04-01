@@ -15,13 +15,19 @@ function getAccessToken() {
 
     accessToken = hash.access_token;
 
-    if (!accessToken) {
-        const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user-read-playback-state user-modify-playback-state`;
-        window.location.href = authUrl;
-    } else {
+    if (accessToken) {
         console.log("✅ Access Token erhalten:", accessToken);
+        localStorage.setItem("spotify_access_token", accessToken); // Speichern
+        window.history.pushState({}, document.title, window.location.pathname); // Token aus der URL entfernen
+    } else {
+        accessToken = localStorage.getItem("spotify_access_token"); // Falls vorhanden, aus dem Speicher laden
+        if (!accessToken) {
+            const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user-read-playback-state user-modify-playback-state`;
+            window.location.href = authUrl;
+        }
     }
 }
+
 
 // 2️⃣ **Spotify Web Playback SDK initialisieren**
 window.onSpotifyWebPlaybackSDKReady = () => {
@@ -75,6 +81,11 @@ async function getRandomSong() {
 
 // 5️⃣ **Song für eine Sekunde abspielen**
 async function playOneSecond() {
+    if (!deviceId) {
+        console.error("❌ Fehler: Player noch nicht bereit!");
+        return;
+    }
+
     const track = await getRandomSong();
     if (!track) return;
 
@@ -98,6 +109,7 @@ async function playOneSecond() {
 
     document.getElementById("songInfo").innerText = `Jetzt spielt: ${track.name} von ${track.artists.map(a => a.name).join(", ")}`;
 }
+
 
 // Event-Listener für den Button
 document.getElementById("playButton").addEventListener("click", playOneSecond);
