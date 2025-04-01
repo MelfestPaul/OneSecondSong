@@ -144,12 +144,13 @@ durationSlider.addEventListener("input", () => {
 // Playlist aktualisieren
 playlist.addEventListener("change", () => {
     var text = playlist.options[playlist.selectedIndex].text;
-    playingTime.textContent = text;
     switch (text) {
         case "Eurovision 2025":
+            playingTime.textContent = text;
             playlistId = "4GRdso2zaUDKossAfv9ZYk";
             	break;
         case "Melodifestivalen 2025":
+            playingTime.textContent = text;
             playlistId = "57CDRmfgoMRMnoMDSiiEqO";
             break;
         case "Mellovision 2025":
@@ -183,7 +184,6 @@ playButton.addEventListener("click", () => {
 });
 
 againButton.addEventListener("click", () => {
-    playingTime.textContent = "TODO";
     console.log("🎵 Again-Button wurde geklickt!");
     playOneSecond(true);
 });
