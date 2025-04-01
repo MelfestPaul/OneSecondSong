@@ -183,6 +183,7 @@ playButton.addEventListener("click", () => {
 });
 
 againButton.addEventListener("click", () => {
+    playingTime.textContent = "TODO";
     console.log("🎵 Again-Button wurde geklickt!");
     playOneSecond(true);
 });
