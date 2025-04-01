@@ -115,7 +115,7 @@ async function playOneSecond() {
     return;
   }
   
-  // Nach 1 Sekunde pausieren
+  // Pausieren
   setTimeout(async () => {
     try {
       const pauseResponse = await fetch("https://api.spotify.com/v1/me/player/pause", {
@@ -130,12 +130,12 @@ async function playOneSecond() {
     } catch (err) {
       console.error("❌ Fehler beim Pausieren:", err);
     }
-  }, durationSlider.value);
+  }, durationSlider.value * 1000);
 }
 
 // Dauer-Label aktualisieren
 durationSlider.addEventListener("input", () => {
-    playingTime.textContent = `${(durationSlider.value / 1000).toFixed(3)} seconds`;
+    playingTime.textContent = `${(durationSlider.value).toFixed(3)} seconds`;
 });
 
 // 5. Event-Listener für den Button
