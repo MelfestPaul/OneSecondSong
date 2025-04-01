@@ -6,6 +6,7 @@ let track;
 
 const playButton = document.getElementById("playButton");
 const revealButton = document.getElementById("revealButton");
+const againButton = document.getElementById("againButton");
 const songInfo = document.getElementById("songInfo");
 const durationSlider = document.getElementById("durationSlider");
 const durationLabel = document.getElementById("durationLabel");
@@ -85,12 +86,10 @@ async function getRandomSong() {
   }
 }
 
-// 4. Song für eine Sekunde abspielen
-async function playOneSecond() {
+// 4. Song kurz abspielen
+async function playOneSecond(track) {
   const deviceId = await getActiveDeviceId();
   if (!deviceId) return;
-  
-  track = await getRandomSong();
   if (!track) return;
   
   console.log(`🎵 Versuche, ${track.name} zu spielen auf Gerät ${deviceId}...`);
@@ -143,8 +142,14 @@ durationSlider.addEventListener("input", () => {
 playButton.addEventListener("click", () => {
   console.log("🎵 Play-Button wurde geklickt!");
   songInfo.textContent = ``;
+  track = getRandomSong();
   playOneSecond();
 });
+
+againButton.addEventListener("click", () => {
+    console.log("🎵 Again-Button wurde geklickt!");
+    playOneSecond();
+  });
 
 // **🎵 Auflösen/Auflösung verstecken**
 revealButton.addEventListener("click", () => {
