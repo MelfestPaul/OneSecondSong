@@ -146,11 +146,9 @@ playlist.addEventListener("change", () => {
     var text = playlist.options[playlist.selectedIndex].text;
     switch (text) {
         case "Eurovision 2025":
-            playingTime.textContent = text;
             playlistId = "4GRdso2zaUDKossAfv9ZYk";
             	break;
         case "Melodifestivalen 2025":
-            playingTime.textContent = text;
             playlistId = "57CDRmfgoMRMnoMDSiiEqO";
             break;
         case "Mellovision 2025":
@@ -174,6 +172,7 @@ playlist.addEventListener("change", () => {
         case "Preselections":
             playlistId = "2j5dnS9rSf4hxOhfTn3ZtH";
       }
+      playingTime.textContent = playlistId;
 });
 
 // 5. Event-Listener für den Button
