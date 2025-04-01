@@ -1,61 +1,24 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>One Second Song</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 1em;
-      background: #f0f0f0;
-      text-align: center;
-    }
-    h1 {
-      margin-bottom: 1em;
-    }
-    button {
-      margin: 0.5em;
-      padding: 0.5em 1em;
-      font-size: 1em;
-      cursor: pointer;
-    }
-    #controls {
-      margin: 1em 0;
-    }
-    #durationSlider {
-      vertical-align: middle;
-    }
-    #durationDisplay {
-      margin-left: 0.5em;
-      font-weight: bold;
-    }
-    #songInfo {
-      margin-top: 1em;
-      font-size: 1.2em;
-      color: #333;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Second Song</title>
 </head>
 <body>
-  <h1>One Second Song</h1>
-  
-  <!-- Buttons -->
-  <button id="nextSong">Nächstes Lied</button>
-  <button id="weiter" disabled>Auflösung</button>
-  <button id="replay" disabled>Nochmal</button>
-  
-  <!-- Schieberegler zur Einstellung der Spieldauer -->
-  <div id="controls">
-    <label for="durationSlider">Spieldauer (Sekunden): </label>
-    <input type="range" id="durationSlider" min="0.125" max="3" step="0.125" value="1">
-    <span id="durationDisplay">1 Sekunde</span>
-  </div>
-  
-  <!-- Anzeige für den aktuellen Song -->
-  <div id="songInfo"></div>
-  
-  <!-- Einbindung der JavaScript-Datei -->
-  <script src="app.js"></script>
+    <h1>One Second Song</h1>
+    
+    <button id="playButton">Nächstes Lied</button>
+    <button id="replayButton" disabled>Nochmal</button>
+    <button id="revealButton" disabled>Weiter</button>
+    
+    <p>
+        <label for="durationSlider">Länge: <span id="durationValue">1</span> Sekunde</label>
+        <input type="range" id="durationSlider" min="0.125" max="3" step="0.125" value="1">
+    </p>
+    
+    <p id="songInfo" style="display: none;"></p>
+    
+    <script src="app.js"></script>
 </body>
 </html>
