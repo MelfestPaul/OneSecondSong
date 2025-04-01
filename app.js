@@ -4,6 +4,10 @@ const playlistId = "57CDRmfgoMRMnoMDSiiEqO";
 let accessToken;
 let track;
 
+const playButton = document.getElementById("playButton");
+const revealButton = document.getElementById("revealButton");
+const songInfo = document.getElementById("songInfo");
+
 // 1. Spotify Authentifizierung (Implicit Grant Flow)
 function getAccessToken() {
   // Entferne das führende '#' und parse die Parameter
@@ -46,12 +50,12 @@ async function getActiveDeviceId() {
       return activeDevice.id;
     } else {
       console.error("❌ Kein aktives Gerät gefunden. Stelle sicher, dass deine Spotify-App läuft und aktiv ist.");
-      document.getElementById("songInfo").innerText = "❌ Kein aktives Gerät gefunden. Öffne Spotify!";
+      songInfo.innerText = "❌ Kein aktives Gerät gefunden. Öffne Spotify!";
       return null;
     }
   } catch (error) {
     console.error("❌ Fehler beim Abrufen der Geräte:", error);
-    document.getElementById("songInfo").innerText = "❌ Fehler beim Abrufen der Geräte.";
+    songInfo.innerText = "❌ Fehler beim Abrufen der Geräte.";
     return null;
   }
 }
@@ -72,7 +76,7 @@ async function getRandomSong() {
     return song;
   } catch (error) {
     console.error(error);
-    document.getElementById("songInfo").innerText = "❌ Fehler beim Laden der Playlist.";
+    songInfo.innerText = "❌ Fehler beim Laden der Playlist.";
     return null;
   }
 }
@@ -104,7 +108,7 @@ async function playOneSecond() {
     }
   } catch (err) {
     console.error("❌ Fehler beim Starten der Wiedergabe:", err);
-    document.getElementById("songInfo").innerText = "❌ Fehler beim Starten der Wiedergabe.";
+    songInfo.innerText = "❌ Fehler beim Starten der Wiedergabe.";
     return;
   }
   
@@ -127,14 +131,22 @@ async function playOneSecond() {
 }
 
 // 5. Event-Listener für den Button
-document.getElementById("playButton").addEventListener("click", () => {
+playButton.addEventListener("click", () => {
   console.log("🎵 Play-Button wurde geklickt!");
   playOneSecond();
 });
 
-document.getElementById("solveButton").addEventListener("click", () => {
-    console.log("✔️❌❔ Solve-Button wurde geklickt!");
-    document.getElementById("songInfo").innerText = `Jetzt spielt: ${track.name} von ${track.artists.map(a => a.name).join(", ")}`;
+// **🎵 Auflösen/Auflösung verstecken**
+revealButton.addEventListener("click", () => {
+    console.log("✔️❌❔ Reveal-Button wurde geklickt!");
+    if (songInfo.style.display === "none") {
+        songInfo.style.display = "block";
+        songInfo.textContent = `${currentTrack.artists.map(a => a.name).join(", ")} von ${currentTrack.name}`;
+        revealButton.textContent = "Auflösung verstecken";
+    } else {
+        songInfo.style.display = "none";
+        revealButton.textContent = "Auflösung";
+    }
 });
 
 // 6. Beim Laden der Seite den Access Token abrufen
