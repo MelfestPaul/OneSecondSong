@@ -140,7 +140,8 @@ playButton.addEventListener("click", () => {
 // **🎵 Auflösen/Auflösung verstecken**
 revealButton.addEventListener("click", () => {
     console.log("✔️❌❔ Reveal-Button wurde geklickt!");
-    songInfo.textContent = `Solution: ${currentTrack.artists.map(a => a.name).join(", ")} von ${currentTrack.name}`;
+    songInfo.style.display = "block";
+    songInfo.textContent = `Jetzt spielte: ${currentTrack.name} von ${currentTrack.artists.map(a => a.name).join(", ")}`;
 });
 
 // 6. Beim Laden der Seite den Access Token abrufen
