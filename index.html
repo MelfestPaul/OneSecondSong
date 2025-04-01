@@ -2,82 +2,60 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>One Second Song Erweiterung</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>One Second Song</title>
   <style>
-    button { margin: 0.5em; }
-    #controls { margin-top: 1em; }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 1em;
+      background: #f0f0f0;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 1em;
+    }
+    button {
+      margin: 0.5em;
+      padding: 0.5em 1em;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    #controls {
+      margin: 1em 0;
+    }
+    #durationSlider {
+      vertical-align: middle;
+    }
+    #durationDisplay {
+      margin-left: 0.5em;
+      font-weight: bold;
+    }
+    #songInfo {
+      margin-top: 1em;
+      font-size: 1.2em;
+      color: #333;
+    }
   </style>
 </head>
 <body>
+  <h1>One Second Song</h1>
+  
   <!-- Buttons -->
   <button id="nextSong">Nächstes Lied</button>
-  <button id="weiter" disabled>Weiter</button>
-  <button id="replay" disabled>Nochmal drücken</button>
+  <button id="weiter" disabled>Auflösung</button>
+  <button id="replay" disabled>Nochmal</button>
   
-  <!-- Schieberegler -->
+  <!-- Schieberegler zur Einstellung der Spieldauer -->
   <div id="controls">
     <label for="durationSlider">Spieldauer (Sekunden): </label>
     <input type="range" id="durationSlider" min="0.125" max="3" step="0.125" value="1">
     <span id="durationDisplay">1 Sekunde</span>
   </div>
   
-  <!-- Anzeige für Song-Info -->
+  <!-- Anzeige für den aktuellen Song -->
   <div id="songInfo"></div>
   
-  <script>
-    let currentSong = null;
-    let duration = parseFloat(document.getElementById("durationSlider").value);
-    
-    // Update der Anzeige, wenn der Schieberegler bewegt wird
-    document.getElementById("durationSlider").addEventListener("input", function() {
-      duration = parseFloat(this.value);
-      document.getElementById("durationDisplay").innerText = duration + " Sekunde" + (duration > 1 ? "n" : "");
-    });
-    
-    // Funktion, die einen Song auswählt (hier exemplarisch)
-    function getNextSong() {
-      // Ersetze dies durch deine Logik (z. B. zufällige Auswahl aus einem Array)
-      return { title: "Beispiel Song", file: "song.mp3" };
-    }
-    
-    // Funktion zum Abspielen eines Songs
-    function playSong(song, playDuration) {
-      // Beispiel mit HTML5 Audio:
-      let audio = new Audio(song.file);
-      audio.play();
-      // Stoppt das Abspielen nach playDuration Sekunden
-      setTimeout(() => {
-        audio.pause();
-        audio.currentTime = 0;
-      }, playDuration * 1000);
-    }
-    
-    // Klick auf "Nächstes Lied"
-    document.getElementById("nextSong").addEventListener("click", function() {
-      // Neues Lied auswählen
-      currentSong = getNextSong();
-      // Lied abspielen, wobei die Dauer über den Slider bestimmt wird
-      playSong(currentSong, duration);
-      // Deaktiviere "Weiter" und "Nochmal drücken" vorerst, falls kein Song geladen
-      document.getElementById("weiter").disabled = false;
-      document.getElementById("replay").disabled = false;
-      // Zurücksetzen der Song-Info-Anzeige
-      document.getElementById("songInfo").innerText = "";
-    });
-    
-    // Klick auf "Weiter" zeigt den Songtitel an
-    document.getElementById("weiter").addEventListener("click", function() {
-      if (currentSong) {
-        document.getElementById("songInfo").innerText = "Jetzt spielt: " + currentSong.title;
-      }
-    });
-    
-    // Klick auf "Nochmal drücken" spielt das aktuell geladene Lied erneut für 1 Sekunde ab
-    document.getElementById("replay").addEventListener("click", function() {
-      if (currentSong) {
-        playSong(currentSong, 1);
-      }
-    });
-  </script>
+  <!-- Einbindung der JavaScript-Datei -->
+  <script src="app.js"></script>
 </body>
 </html>

@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const redirectUri = "https://melfestpaul.github.io/OneSecondSong/"; 
     const playlistId = "57CDRmfgoMRMnoMDSiiEqO";
   
-    // Auslesen des Access Tokens aus der URL (nach erfolgreichem OAuth)
+    // Funktion: Token aus der URL extrahieren
     function getTokenFromUrl() {
       const hash = window.location.hash.substring(1).split('&').reduce((acc, item) => {
         let parts = item.split('=');
@@ -16,27 +16,31 @@ document.addEventListener("DOMContentLoaded", () => {
   
     let accessToken = getTokenFromUrl();
     if (accessToken) {
-      // Entferne den Token-Teil aus der URL, damit er nicht sichtbar bleibt
+      // Entferne den Token aus der URL
       window.history.pushState("", document.title, window.location.pathname + window.location.search);
     } else {
-      // Falls noch kein Token vorliegt, leite zur Spotify-Login-Seite weiter
-      const scopes = "playlist-read-private"; // ggf. weitere Scopes hinzufügen
+      // Falls kein Token vorhanden ist, zur Spotify-Login-Seite weiterleiten
+      const scopes = "playlist-read-private";
       window.location = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}&response_type=token`;
     }
   
-    // Variablen zur Steuerung
+    // Variablen für die Steuerung
     let tracks = [];      // Array für Songs aus der Playlist
     let currentSong = null;
     let duration = parseFloat(document.getElementById("durationSlider").value);
-    let audio = new Audio(); // Globale Audio-Instanz, die wiederverwendet wird
+    let audio = new Audio(); // Globale Audio-Instanz
   
-    // Schieberegler aktualisieren
+    // Schieberegler: Anzeige aktualisieren
     document.getElementById("durationSlider").addEventListener("input", function() {
       duration = parseFloat(this.value);
       document.getElementById("durationDisplay").innerText = duration + " Sekunde" + (duration > 1 ? "n" : "");
     });
   
-    // Playlist-Tracks von Spotify abrufen
+    // Stelle sicher, dass die Buttons den gewünschten Text haben
+    document.getElementById("weiter").innerText = "Auflösung";
+    document.getElementById("replay").innerText = "Nochmal";
+  
+    // Spotify: Playlist-Tracks abrufen
     function fetchPlaylistTracks() {
       fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
         headers: {
@@ -45,11 +49,14 @@ document.addEventListener("DOMContentLoaded", () => {
       })
         .then(response => response.json())
         .then(data => {
-          // Filtere nur Tracks, die auch eine Vorschau-URL haben
+          // Filter: Nur Tracks mit einer Preview-URL berücksichtigen
           tracks = data.items
             .filter(item => item.track && item.track.preview_url)
             .map(item => item.track);
           console.log("Playlist-Tracks geladen:", tracks);
+          if(tracks.length === 0){
+            console.error("Es wurden keine Tracks mit gültiger preview_url gefunden.");
+          }
         })
         .catch(err => console.error("Fehler beim Abrufen der Playlist:", err));
     }
@@ -62,24 +69,36 @@ document.addEventListener("DOMContentLoaded", () => {
         console.warn("Noch keine Tracks geladen.");
         return null;
       }
-      return tracks[Math.floor(Math.random() * tracks.length)];
+      let song = tracks[Math.floor(Math.random() * tracks.length)];
+      console.log("Ausgewählter Song:", song);
+      return song;
     }
   
     // Spielt einen Song (Preview) für eine bestimmte Dauer ab
     function playSong(song, playDuration) {
-      if (!song) return;
+      if (!song) {
+        console.error("Kein Song verfügbar, der abgespielt werden könnte.");
+        return;
+      }
+      if (!song.preview_url) {
+        console.error("Dieser Song besitzt keine preview_url.");
+        return;
+      }
       audio.src = song.preview_url;
-      audio.play();
-      // Stoppt den Song nach der angegebenen Dauer
+      audio.play().then(() => {
+        console.log("Song wird abgespielt:", song.name);
+      }).catch(err => {
+        console.error("Fehler beim Abspielen des Songs:", err);
+      });
+      // Stoppt den Song nach playDuration Sekunden
       setTimeout(() => {
         audio.pause();
         audio.currentTime = 0;
+        console.log("Song gestoppt nach", playDuration, "Sekunden.");
       }, playDuration * 1000);
     }
   
-    // Event-Listener für die Buttons
-  
-    // "Nächstes Lied": Wählt einen neuen Song und spielt ihn für die im Slider eingestellte Dauer ab
+    // "Nächstes Lied": Wählt einen neuen Song aus und spielt ihn für die im Slider definierte Dauer ab
     document.getElementById("nextSong").addEventListener("click", function() {
       currentSong = getNextSong();
       playSong(currentSong, duration);
@@ -88,18 +107,17 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("replay").disabled = false;
     });
   
-    // "Weiter": Zeigt den Namen des aktuell geladenen Songs an
+    // "Auflösung" (früher "Weiter"): Zeigt den Namen des aktuell geladenen Songs an
     document.getElementById("weiter").addEventListener("click", function() {
       if (currentSong) {
         document.getElementById("songInfo").innerText = "Jetzt spielt: " + currentSong.name;
       }
     });
   
-    // "Nochmal drücken": Spielt das aktuell geladene Lied erneut für exakt 1 Sekunde ab
+    // "Nochmal": Spielt das aktuell geladene Lied erneut für exakt 1 Sekunde ab
     document.getElementById("replay").addEventListener("click", function() {
       if (currentSong) {
         playSong(currentSong, 1);
       }
     });
-  });
-  
+  });  
