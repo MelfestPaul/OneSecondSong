@@ -13,7 +13,7 @@ const songInfo = document.getElementById("songInfo");
 const durationSlider = document.getElementById("durationSlider");
 const durationLabel = document.getElementById("durationLabel");
 
-// Dauer aktualisieren
+// Dauer-Label aktualisieren
 durationSlider.addEventListener("input", () => {
     durationLabel.textContent = `${(durationSlider.value / 1000).toFixed(3)} Sekunden`;
 });
@@ -34,6 +34,7 @@ function getAccessToken() {
     }
 }
 
+// Web-Player Initialisierung
 window.onSpotifyWebPlaybackSDKReady = () => {
     const player = new Spotify.Player({
         name: "One Second Player",
@@ -48,7 +49,34 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     player.connect();
 };
 
-// Zufälligen Song aus der Playlist abrufen
+// **🎵 Gerät aktivieren, falls ein anderes aktiv ist**
+async function ensureActiveDevice() {
+    const response = await fetch("https://api.spotify.com/v1/me/player", {
+        headers: { "Authorization": `Bearer ${accessToken}` }
+    });
+
+    if (!response.ok) {
+        console.error("❌ Fehler beim Abrufen des aktuellen Geräts!");
+        return false;
+    }
+
+    const data = await response.json();
+    if (data.device && data.device.id === deviceId) {
+        return true; // Gerät ist bereits aktiv
+    }
+
+    // **🎯 Falls unser Web-Player nicht aktiv ist, umschalten**
+    console.log("🔄 Wechsel zu Web-Player...");
+    await fetch("https://api.spotify.com/v1/me/player", {
+        method: "PUT",
+        headers: { "Authorization": `Bearer ${accessToken}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ device_ids: [deviceId], play: false })
+    });
+
+    return true;
+}
+
+// **🎵 Zufälligen Song aus der Playlist abrufen**
 async function getRandomSong() {
     const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
         headers: { "Authorization": `Bearer ${accessToken}` }
@@ -64,12 +92,18 @@ async function getRandomSong() {
     return tracks[Math.floor(Math.random() * tracks.length)];
 }
 
-// Song für die gewählte Dauer abspielen
+// **🎵 Song für die gewählte Dauer abspielen**
 async function playSong(track) {
     if (!track) return;
-    
+
     console.log("🎵 Spiele Song:", track.name, "von", track.artists.map(a => a.name).join(", "));
-    
+
+    const isActive = await ensureActiveDevice();
+    if (!isActive) {
+        console.error("❌ Fehler: Web-Player konnte nicht aktiviert werden!");
+        return;
+    }
+
     await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
         method: "PUT",
         headers: { "Authorization": `Bearer ${accessToken}`, "Content-Type": "application/json" },
@@ -84,7 +118,7 @@ async function playSong(track) {
     }, durationSlider.value);
 }
 
-// Event: Nächstes Lied
+// **🎵 Nächstes Lied**
 playButton.addEventListener("click", async () => {
     console.log("🎵 Nächstes Lied wird geladen...");
     currentTrack = await getRandomSong();
@@ -98,14 +132,14 @@ playButton.addEventListener("click", async () => {
     revealButton.disabled = false;
 });
 
-// Event: Nochmal spielen
+// **🎵 Nochmal spielen**
 replayButton.addEventListener("click", async () => {
     if (!currentTrack) return;
     console.log("🔄 Spiele aktuellen Song erneut...");
     await playSong(currentTrack);
 });
 
-// Event: Auflösen/Auflösung verstecken
+// **🎵 Auflösen/Auflösung verstecken**
 revealButton.addEventListener("click", () => {
     if (songInfo.style.display === "none") {
         songInfo.style.display = "block";
