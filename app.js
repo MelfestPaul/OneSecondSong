@@ -6,6 +6,7 @@ let track;
 
 const playButton = document.getElementById("playButton");
 const revealButton = document.getElementById("revealButton");
+const durationSlider = document.getElementById("durationSlider");
 const songInfo = document.getElementById("songInfo");
 
 // 1. Spotify Authentifizierung (Implicit Grant Flow)
@@ -127,8 +128,13 @@ async function playOneSecond() {
     } catch (err) {
       console.error("❌ Fehler beim Pausieren:", err);
     }
-  }, 1000);
+  }, durationSlider.value);
 }
+
+// Dauer-Label aktualisieren
+durationSlider.addEventListener("input", () => {
+    durationLabel.textContent = `${(durationSlider.value / 1000).toFixed(3)} seconds`;
+});
 
 // 5. Event-Listener für den Button
 playButton.addEventListener("click", () => {
@@ -141,7 +147,7 @@ playButton.addEventListener("click", () => {
 revealButton.addEventListener("click", () => {
     console.log("✔️❌❔ Reveal-Button wurde geklickt!");
     songInfo.style.display = "block";
-    songInfo.textContent = `Jetzt spielte ${track.name} von ${track.artists.map(a => a.name).join(", ")}`;
+    songInfo.textContent = `${track.name} von ${track.artists.map(a => a.name).join(", ")}`;
 });
 
 // 6. Beim Laden der Seite den Access Token abrufen
