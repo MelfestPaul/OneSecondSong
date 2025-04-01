@@ -1,10 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
     // Spotify-Konstanten
     const clientId = "4c0f7f2072cd4c4291ea5e75a4b90e99";
-    const redirectUri = "http://MelfestPaul.github.io/OneSecondSong/"; 
+    const redirectUri = "https://melfestpaul.github.io/OneSecondSong/"; 
     const playlistId = "57CDRmfgoMRMnoMDSiiEqO";
   
-    // Funktion: Token aus der URL extrahieren
     function getTokenFromUrl() {
       const hash = window.location.hash.substring(1).split('&').reduce((acc, item) => {
         let parts = item.split('=');
@@ -16,31 +15,28 @@ document.addEventListener("DOMContentLoaded", () => {
   
     let accessToken = getTokenFromUrl();
     if (accessToken) {
-      // Entferne den Token aus der URL
       window.history.pushState("", document.title, window.location.pathname + window.location.search);
     } else {
-      // Falls kein Token vorhanden ist, zur Spotify-Login-Seite weiterleiten
       const scopes = "playlist-read-private";
       window.location = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}&response_type=token`;
     }
   
     // Variablen für die Steuerung
-    let tracks = [];      // Array für Songs aus der Playlist
+    let tracks = [];
     let currentSong = null;
     let duration = parseFloat(document.getElementById("durationSlider").value);
-    let audio = new Audio(); // Globale Audio-Instanz
+    let audio = new Audio(); 
   
-    // Schieberegler: Anzeige aktualisieren
+    // Event-Listener für den Slider
     document.getElementById("durationSlider").addEventListener("input", function() {
       duration = parseFloat(this.value);
       document.getElementById("durationDisplay").innerText = duration + " Sekunde" + (duration > 1 ? "n" : "");
     });
   
-    // Stelle sicher, dass die Buttons den gewünschten Text haben
+    // Buttons beschriften
     document.getElementById("weiter").innerText = "Auflösung";
     document.getElementById("replay").innerText = "Nochmal";
   
-    // Spotify: Playlist-Tracks abrufen
     function fetchPlaylistTracks() {
       fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
         headers: {
@@ -49,13 +45,10 @@ document.addEventListener("DOMContentLoaded", () => {
       })
         .then(response => response.json())
         .then(data => {
-          // Filter: Nur Tracks mit einer Preview-URL berücksichtigen
-          tracks = data.items
-            .filter(item => item.track && item.track.preview_url)
-            .map(item => item.track);
+          tracks = data.items.filter(item => item.track && item.track.preview_url).map(item => item.track);
           console.log("Playlist-Tracks geladen:", tracks);
-          if(tracks.length === 0){
-            console.error("Es wurden keine Tracks mit gültiger preview_url gefunden.");
+          if (tracks.length === 0) {
+            console.error("Es wurden keine Tracks mit preview_url gefunden.");
           }
         })
         .catch(err => console.error("Fehler beim Abrufen der Playlist:", err));
@@ -63,61 +56,56 @@ document.addEventListener("DOMContentLoaded", () => {
   
     fetchPlaylistTracks();
   
-    // Wählt zufällig einen Song aus der geladenen Playlist aus
     function getNextSong() {
       if (tracks.length === 0) {
-        console.warn("Noch keine Tracks geladen.");
+        console.warn("Keine Songs geladen.");
         return null;
       }
       let song = tracks[Math.floor(Math.random() * tracks.length)];
-      console.log("Ausgewählter Song:", song);
+      console.log("Neuer Song ausgewählt:", song);
       return song;
     }
   
-    // Spielt einen Song (Preview) für eine bestimmte Dauer ab
     function playSong(song, playDuration) {
-      if (!song) {
-        console.error("Kein Song verfügbar, der abgespielt werden könnte.");
+      if (!song || !song.preview_url) {
+        console.error("Kein gültiger Song zum Abspielen.");
         return;
       }
-      if (!song.preview_url) {
-        console.error("Dieser Song besitzt keine preview_url.");
-        return;
-      }
+  
       audio.src = song.preview_url;
+      audio.load(); // WICHTIG: Dadurch wird sichergestellt, dass die Datei richtig geladen wird
       audio.play().then(() => {
         console.log("Song wird abgespielt:", song.name);
+        setTimeout(() => {
+          audio.pause();
+          audio.currentTime = 0;
+          console.log("Song gestoppt nach", playDuration, "Sekunden.");
+        }, playDuration * 1000);
       }).catch(err => {
         console.error("Fehler beim Abspielen des Songs:", err);
       });
-      // Stoppt den Song nach playDuration Sekunden
-      setTimeout(() => {
-        audio.pause();
-        audio.currentTime = 0;
-        console.log("Song gestoppt nach", playDuration, "Sekunden.");
-      }, playDuration * 1000);
     }
   
-    // "Nächstes Lied": Wählt einen neuen Song aus und spielt ihn für die im Slider definierte Dauer ab
     document.getElementById("nextSong").addEventListener("click", function() {
       currentSong = getNextSong();
-      playSong(currentSong, duration);
-      document.getElementById("songInfo").innerText = "";
-      document.getElementById("weiter").disabled = false;
-      document.getElementById("replay").disabled = false;
+      if (currentSong) {
+        playSong(currentSong, duration);
+        document.getElementById("songInfo").innerText = "";
+        document.getElementById("weiter").disabled = false;
+        document.getElementById("replay").disabled = false;
+      }
     });
   
-    // "Auflösung" (früher "Weiter"): Zeigt den Namen des aktuell geladenen Songs an
     document.getElementById("weiter").addEventListener("click", function() {
       if (currentSong) {
         document.getElementById("songInfo").innerText = "Jetzt spielt: " + currentSong.name;
       }
     });
   
-    // "Nochmal": Spielt das aktuell geladene Lied erneut für exakt 1 Sekunde ab
     document.getElementById("replay").addEventListener("click", function() {
       if (currentSong) {
         playSong(currentSong, 1);
       }
     });
-  });  
+  });
+  
