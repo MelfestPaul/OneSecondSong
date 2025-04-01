@@ -39,8 +39,12 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     player.addListener("ready", ({ device_id }) => {
         console.log("✅ Player ist bereit, Device ID:", device_id);
         deviceId = device_id;
+        // Gerät übertragen
         transferPlayback();
+        // Button aktivieren, da der Player jetzt bereit ist
+        document.getElementById("playButton").disabled = false;
     });
+    
 
     player.addListener("not_ready", ({ device_id }) => {
         console.log("❌ Player nicht bereit, Device ID:", device_id);
@@ -82,7 +86,7 @@ async function getRandomSong() {
 // 5️⃣ **Song für eine Sekunde abspielen**
 async function playOneSecond() {
     if (!deviceId) {
-        console.error("❌ Fehler: Player noch nicht bereit!");
+        console.error("❌ Fehler: Player noch nicht bereit! Bitte warte, bis der Player initialisiert ist.");
         return;
     }
 
