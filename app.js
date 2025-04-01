@@ -92,6 +92,13 @@ async function getRandomSong() {
 
 // 5️⃣ **Song für eine Sekunde abspielen**
 async function playOneSecond() {
+    if (!deviceId) {
+        console.error("❌ Fehler: Player noch nicht bereit! Bitte warte, bis der Player initialisiert ist.");
+        return;
+    }
+
+    console.log("🎵 playOneSecond() wird aufgerufen.");
+
     const track = await getRandomSong();
     if (!track) {
         console.error("❌ Kein Song gefunden, Wiedergabe gestoppt.");
@@ -120,11 +127,17 @@ async function playOneSecond() {
 
 
 
+
 // Event-Listener für den Button
 document.getElementById("playButton").addEventListener("click", () => {
-    console.log("🎵 Play-Button wurde geklickt!");
+    if (!deviceId) {
+        console.log("⏳ Warten auf Player-Initialisierung...");
+        return;
+    }
+    console.log("🎵 Button geklickt!");
     playOneSecond();
 });
+
 
 // 6️⃣ **Beim Laden der Seite Token abrufen**
 getAccessToken();
