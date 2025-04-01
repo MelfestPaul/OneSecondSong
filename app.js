@@ -1,6 +1,6 @@
 const clientId = "4c0f7f2072cd4c4291ea5e75a4b90e99";
 const redirectUri = "https://melfestpaul.github.io/OneSecondSong/"; 
-const playlistId = "4GRdso2zaUDKossAfv9ZYk"; 
+let playlistId = "4GRdso2zaUDKossAfv9ZYk"; 
 let accessToken;
 let track;
 
@@ -172,11 +172,11 @@ playlist.addEventListener("change", () => {
         case "Preselections":
             playlistId = "2j5dnS9rSf4hxOhfTn3ZtH";
       }
-      playingTime.textContent = playlistId;
 });
 
 // 5. Event-Listener für den Button
 playButton.addEventListener("click", () => {
+    playingTime.textContent = playlistId;
   console.log("🎵 Play-Button wurde geklickt!");
   songInfo.textContent = ``;
   playOneSecond(false);
