@@ -1,136 +1,105 @@
-const clientId = "4c0f7f2072cd4c4291ea5e75a4b90e99";
-const redirectUri = "https://melfestpaul.github.io/OneSecondSong/"; 
-const playlistId = "57CDRmfgoMRMnoMDSiiEqO"; 
-let accessToken;
-
-// 1. Spotify Authentifizierung (Implicit Grant Flow)
-function getAccessToken() {
-  // Entferne das führende '#' und parse die Parameter
-  const hash = window.location.hash.substring(1);
-  const params = new URLSearchParams(hash);
-  const token = params.get("access_token");
+document.addEventListener("DOMContentLoaded", () => {
+    // Spotify-Konstanten
+    const clientId = "4c0f7f2072cd4c4291ea5e75a4b90e99";
+    const redirectUri = "https://melfestpaul.github.io/OneSecondSong/"; 
+    const playlistId = "57CDRmfgoMRMnoMDSiiEqO";
   
-  if (token) {
-    accessToken = token;
-    // Speichern, damit auch nach Reload der Token verfügbar ist
-    localStorage.setItem("spotify_access_token", accessToken);
-    // URL bereinigen
-    window.history.pushState({}, document.title, window.location.pathname);
-    console.log("✅ Access Token erhalten:", accessToken);
-  } else {
-    // Falls schon ein Token im localStorage vorhanden ist, verwende diesen
-    accessToken = localStorage.getItem("spotify_access_token");
-    if (!accessToken) {
-      // Weiterleiten zur Spotify-Autorisierung
-      const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user-read-playback-state%20user-modify-playback-state`;
-      window.location.href = authUrl;
-    } else {
-      console.log("✅ Access Token aus localStorage:", accessToken);
+    // Auslesen des Access Tokens aus der URL (nach erfolgreichem OAuth)
+    function getTokenFromUrl() {
+      const hash = window.location.hash.substring(1).split('&').reduce((acc, item) => {
+        let parts = item.split('=');
+        acc[parts[0]] = decodeURIComponent(parts[1]);
+        return acc;
+      }, {});
+      return hash.access_token;
     }
-  }
-}
-
-// 2. Hole die aktiven Geräte (Spotify App muss bereits laufen)
-async function getActiveDeviceId() {
-  try {
-    const response = await fetch("https://api.spotify.com/v1/me/player/devices", {
-      headers: { "Authorization": `Bearer ${accessToken}` }
-    });
-    const data = await response.json();
-    console.log("Geräte:", data.devices);
-    // Wähle das erste verfügbare Gerät, das online ist
-    const activeDevice = data.devices.find(device => device.is_active || device.type === "Smartphone" || device.type === "Computer");
-    if (activeDevice) {
-      console.log("✅ Aktives Gerät gefunden:", activeDevice.id, activeDevice.name);
-      return activeDevice.id;
+  
+    let accessToken = getTokenFromUrl();
+    if (accessToken) {
+      // Entferne den Token-Teil aus der URL, damit er nicht sichtbar bleibt
+      window.history.pushState("", document.title, window.location.pathname + window.location.search);
     } else {
-      console.error("❌ Kein aktives Gerät gefunden. Stelle sicher, dass deine Spotify-App läuft und aktiv ist.");
-      document.getElementById("songInfo").innerText = "❌ Kein aktives Gerät gefunden. Öffne Spotify!";
-      return null;
+      // Falls noch kein Token vorliegt, leite zur Spotify-Login-Seite weiter
+      const scopes = "playlist-read-private"; // ggf. weitere Scopes hinzufügen
+      window.location = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}&response_type=token`;
     }
-  } catch (error) {
-    console.error("❌ Fehler beim Abrufen der Geräte:", error);
-    document.getElementById("songInfo").innerText = "❌ Fehler beim Abrufen der Geräte.";
-    return null;
-  }
-}
-
-// 3. Hole zufälligen Song aus der Playlist
-async function getRandomSong() {
-  try {
-    console.log("📀 Hole einen zufälligen Song aus der Playlist...");
-    const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
-      headers: { "Authorization": `Bearer ${accessToken}` }
+  
+    // Variablen zur Steuerung
+    let tracks = [];      // Array für Songs aus der Playlist
+    let currentSong = null;
+    let duration = parseFloat(document.getElementById("durationSlider").value);
+    let audio = new Audio(); // Globale Audio-Instanz, die wiederverwendet wird
+  
+    // Schieberegler aktualisieren
+    document.getElementById("durationSlider").addEventListener("input", function() {
+      duration = parseFloat(this.value);
+      document.getElementById("durationDisplay").innerText = duration + " Sekunde" + (duration > 1 ? "n" : "");
     });
-    if (!response.ok) throw new Error("❌ Fehler beim Laden der Playlist");
-    const data = await response.json();
-    const tracks = data.items.map(item => item.track);
-    console.log(`✅ ${tracks.length} Songs gefunden.`);
-    const song = tracks[Math.floor(Math.random() * tracks.length)];
-    console.log(`🎶 Zufälliger Song: ${song?.name || "Kein Song gefunden"}`);
-    return song;
-  } catch (error) {
-    console.error(error);
-    document.getElementById("songInfo").innerText = "❌ Fehler beim Laden der Playlist.";
-    return null;
-  }
-}
-
-// 4. Song für eine Sekunde abspielen
-async function playOneSecond() {
-  const deviceId = await getActiveDeviceId();
-  if (!deviceId) return;
   
-  const track = await getRandomSong();
-  if (!track) return;
-  
-  document.getElementById("songInfo").innerText = `Jetzt spielt: ${track.name} von ${track.artists.map(a => a.name).join(", ")}`;
-  console.log(`🎵 Versuche, ${track.name} zu spielen auf Gerät ${deviceId}...`);
-  
-  // Starte die Wiedergabe des Tracks auf dem aktiven Gerät
-  try {
-    const playResponse = await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
-      method: "PUT",
-      headers: {
-        "Authorization": `Bearer ${accessToken}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ uris: [track.uri], position_ms: 0 })
-    });
-    if (playResponse.status === 204) {
-      console.log("✅ Song gestartet!");
-    } else {
-      console.error("❌ Fehler beim Starten der Wiedergabe:", playResponse.status);
+    // Playlist-Tracks von Spotify abrufen
+    function fetchPlaylistTracks() {
+      fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          // Filtere nur Tracks, die auch eine Vorschau-URL haben
+          tracks = data.items
+            .filter(item => item.track && item.track.preview_url)
+            .map(item => item.track);
+          console.log("Playlist-Tracks geladen:", tracks);
+        })
+        .catch(err => console.error("Fehler beim Abrufen der Playlist:", err));
     }
-  } catch (err) {
-    console.error("❌ Fehler beim Starten der Wiedergabe:", err);
-    document.getElementById("songInfo").innerText = "❌ Fehler beim Starten der Wiedergabe.";
-    return;
-  }
   
-  // Nach 1 Sekunde pausieren
-  setTimeout(async () => {
-    try {
-      const pauseResponse = await fetch("https://api.spotify.com/v1/me/player/pause", {
-        method: "PUT",
-        headers: { "Authorization": `Bearer ${accessToken}` }
-      });
-      if (pauseResponse.status === 204) {
-        console.log("⏸ Song pausiert!");
-      } else {
-        console.error("❌ Fehler beim Pausieren:", pauseResponse.status);
+    fetchPlaylistTracks();
+  
+    // Wählt zufällig einen Song aus der geladenen Playlist aus
+    function getNextSong() {
+      if (tracks.length === 0) {
+        console.warn("Noch keine Tracks geladen.");
+        return null;
       }
-    } catch (err) {
-      console.error("❌ Fehler beim Pausieren:", err);
+      return tracks[Math.floor(Math.random() * tracks.length)];
     }
-  }, 1000);
-}
-
-// 5. Event-Listener für den Button
-document.getElementById("playButton").addEventListener("click", () => {
-  console.log("🎵 Play-Button wurde geklickt!");
-  playOneSecond();
-});
-
-// 6. Beim Laden der Seite den Access Token abrufen
-getAccessToken();
+  
+    // Spielt einen Song (Preview) für eine bestimmte Dauer ab
+    function playSong(song, playDuration) {
+      if (!song) return;
+      audio.src = song.preview_url;
+      audio.play();
+      // Stoppt den Song nach der angegebenen Dauer
+      setTimeout(() => {
+        audio.pause();
+        audio.currentTime = 0;
+      }, playDuration * 1000);
+    }
+  
+    // Event-Listener für die Buttons
+  
+    // "Nächstes Lied": Wählt einen neuen Song und spielt ihn für die im Slider eingestellte Dauer ab
+    document.getElementById("nextSong").addEventListener("click", function() {
+      currentSong = getNextSong();
+      playSong(currentSong, duration);
+      document.getElementById("songInfo").innerText = "";
+      document.getElementById("weiter").disabled = false;
+      document.getElementById("replay").disabled = false;
+    });
+  
+    // "Weiter": Zeigt den Namen des aktuell geladenen Songs an
+    document.getElementById("weiter").addEventListener("click", function() {
+      if (currentSong) {
+        document.getElementById("songInfo").innerText = "Jetzt spielt: " + currentSong.name;
+      }
+    });
+  
+    // "Nochmal drücken": Spielt das aktuell geladene Lied erneut für exakt 1 Sekunde ab
+    document.getElementById("replay").addEventListener("click", function() {
+      if (currentSong) {
+        playSong(currentSong, 1);
+      }
+    });
+  });
+  
