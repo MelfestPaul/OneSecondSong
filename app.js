@@ -133,14 +133,14 @@ async function playOneSecond() {
 // 5. Event-Listener für den Button
 playButton.addEventListener("click", () => {
   console.log("🎵 Play-Button wurde geklickt!");
-  //revealButton.textContent = none;
+  songInfo.textContent = ``;
   playOneSecond();
 });
 
 // **🎵 Auflösen/Auflösung verstecken**
 revealButton.addEventListener("click", () => {
     console.log("✔️❌❔ Reveal-Button wurde geklickt!");
-    revealButton.textContent = "Solution";
+    songInfo.textContent = `${currentTrack.artists.map(a => a.name).join(", ")} von ${currentTrack.name}`;
 });
 
 // 6. Beim Laden der Seite den Access Token abrufen
