@@ -144,8 +144,8 @@ durationSlider.addEventListener("input", () => {
 // Playlist aktualisieren
 playlist.addEventListener("input", () => {
     var text = playlist.options[playlist.selectedIndex].text;
+    playingTime.textContent = text;
     switch (text) {
-        playingTime.textContent = "Hallo!";
         case "Eurovision 2025":
             playlistId = "4GRdso2zaUDKossAfv9ZYk";
             	break;
