@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     // Spotify-Konstanten
     const clientId = "4c0f7f2072cd4c4291ea5e75a4b90e99";
-    const redirectUri = "https://melfestpaul.github.io/OneSecondSong/"; 
+    const redirectUri = "https://MelfestPaul.github.io/OneSecondSong/"; 
     const playlistId = "57CDRmfgoMRMnoMDSiiEqO";
   
     // Funktion: Token aus der URL extrahieren
