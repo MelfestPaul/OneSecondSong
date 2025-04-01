@@ -1,9 +1,10 @@
 const clientId = "4c0f7f2072cd4c4291ea5e75a4b90e99";
 const redirectUri = "https://melfestpaul.github.io/OneSecondSong/"; 
-const playlistId = "57CDRmfgoMRMnoMDSiiEqO"; 
+const playlistId = "4GRdso2zaUDKossAfv9ZYk"; 
 let accessToken;
 let track;
 
+const playlist = document.getElementById("playlist");
 const playButton = document.getElementById("playButton");
 const revealButton = document.getElementById("revealButton");
 const againButton = document.getElementById("againButton");
@@ -140,6 +141,39 @@ durationSlider.addEventListener("input", () => {
     playingTime.textContent = `${durationSlider.value} second(s)`;
 });
 
+// Playlist aktualisieren
+playlist.addEventListener("input", () => {
+    var text = playlist.options[playlist.selectedIndex].text;
+    switch (text) {
+        case "Eurovision 2025":
+            playlistId = "4GRdso2zaUDKossAfv9ZYk";
+            	break;
+        case "Melodifestivalen 2025":
+            playlistId = "57CDRmfgoMRMnoMDSiiEqO";
+            break;
+        case "Mellovision 2025":
+            playlistId = "0vPoCHXo2MpwZYdUjzdy0t";
+            break;
+        case "Preselections 2025":
+            playlistId = "4x9NwuUwnZaUEMXTRqxyTz";
+            break;
+        case "Eurovision 2024":
+            playlistId = "6rsWc7Z7AidcPjUfJNjhp5";
+            break;
+        case "Preselections 2024":
+            playlistId = "38D3qbdFukoyCw9W6lYoim";
+            break;
+        case "Eurovision":
+            playlistId = "3pVznEeaCmjbDqjjuOuAOO";
+            break;
+        case "Melodifestivalen":
+            playlistId = "5Y6mYaL6fTUPkzRs0MFEn0";
+            break;
+        case "Preselections":
+            playlistId = "2j5dnS9rSf4hxOhfTn3ZtH";
+      }
+});
+
 // 5. Event-Listener für den Button
 playButton.addEventListener("click", () => {
   console.log("🎵 Play-Button wurde geklickt!");
@@ -150,7 +184,7 @@ playButton.addEventListener("click", () => {
 againButton.addEventListener("click", () => {
     console.log("🎵 Again-Button wurde geklickt!");
     playOneSecond(true);
-  });
+});
 
 // **🎵 Auflösen/Auflösung verstecken**
 revealButton.addEventListener("click", () => {
