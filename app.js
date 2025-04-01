@@ -69,6 +69,7 @@ function transferPlayback() {
 // 4️⃣ **Zufälligen Song aus der Playlist abrufen**
 async function getRandomSong() {
     try {
+        console.log("📀 Hole einen zufälligen Song aus der Playlist...");
         const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
             headers: { "Authorization": `Bearer ${accessToken}` }
         });
@@ -77,25 +78,27 @@ async function getRandomSong() {
 
         const data = await response.json();
         const tracks = data.items.map(item => item.track);
-        return tracks[Math.floor(Math.random() * tracks.length)];
+        console.log(`✅ ${tracks.length} Songs gefunden.`);
+        
+        const song = tracks[Math.floor(Math.random() * tracks.length)];
+        console.log(`🎶 Zufälliger Song: ${song?.name || "Kein Song gefunden"}`);
+        return song;
     } catch (error) {
         console.error(error);
         return null;
     }
 }
 
+
 // 5️⃣ **Song für eine Sekunde abspielen**
 async function playOneSecond() {
-    console.log("playOneSecond() wird aufgerufen.");
-    if (!deviceId) {
-        console.error("❌ Fehler: Player noch nicht bereit! Bitte warte, bis der Player initialisiert ist.");
+    const track = await getRandomSong();
+    if (!track) {
+        console.error("❌ Kein Song gefunden, Wiedergabe gestoppt.");
         return;
     }
 
-    const track = await getRandomSong();
-    if (!track) return;
-
-    console.log("🎵 Spiele Song:", track.name, "von", track.artists.map(a => a.name).join(", "));
+    console.log(`🎵 Versuche, ${track.name} zu spielen...`);
 
     fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
         method: "PUT",
@@ -105,21 +108,21 @@ async function playOneSecond() {
         },
         body: JSON.stringify({ uris: [track.uri], position_ms: 0 })
     }).then(() => {
+        console.log("✅ Song gestartet!");
         setTimeout(() => {
             fetch("https://api.spotify.com/v1/me/player/pause", {
                 method: "PUT",
                 headers: { "Authorization": `Bearer ${accessToken}` }
-            });
+            }).then(() => console.log("⏸ Song pausiert!"));
         }, 1000);
-    }).catch(err => console.error("❌ Wiedergabe konnte nicht gestartet werden:", err));
-
-    document.getElementById("songInfo").innerText = `Jetzt spielt: ${track.name} von ${track.artists.map(a => a.name).join(", ")}`;
+    }).catch(err => console.error("❌ Fehler beim Starten der Wiedergabe:", err));
 }
+
 
 
 // Event-Listener für den Button
 document.getElementById("playButton").addEventListener("click", () => {
-    console.log("Button geklickt!");
+    console.log("🎵 Play-Button wurde geklickt!");
     playOneSecond();
 });
 
