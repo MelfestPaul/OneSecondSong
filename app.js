@@ -2,6 +2,7 @@ const clientId = "4c0f7f2072cd4c4291ea5e75a4b90e99";
 const redirectUri = "https://melfestpaul.github.io/OneSecondSong/"; 
 const playlistId = "57CDRmfgoMRMnoMDSiiEqO"; 
 let accessToken;
+let track;
 
 // 1. Spotify Authentifizierung (Implicit Grant Flow)
 function getAccessToken() {
@@ -81,10 +82,9 @@ async function playOneSecond() {
   const deviceId = await getActiveDeviceId();
   if (!deviceId) return;
   
-  const track = await getRandomSong();
+  track = await getRandomSong();
   if (!track) return;
   
-  document.getElementById("songInfo").innerText = `Jetzt spielt: ${track.name} von ${track.artists.map(a => a.name).join(", ")}`;
   console.log(`🎵 Versuche, ${track.name} zu spielen auf Gerät ${deviceId}...`);
   
   // Starte die Wiedergabe des Tracks auf dem aktiven Gerät
@@ -130,6 +130,11 @@ async function playOneSecond() {
 document.getElementById("playButton").addEventListener("click", () => {
   console.log("🎵 Play-Button wurde geklickt!");
   playOneSecond();
+});
+
+document.getElementById("solveButton").addEventListener("click", () => {
+    console.log("✔️❌❔ Solve-Button wurde geklickt!");
+    document.getElementById("songInfo").innerText = `Jetzt spielt: ${track.name} von ${track.artists.map(a => a.name).join(", ")}`;
 });
 
 // 6. Beim Laden der Seite den Access Token abrufen
