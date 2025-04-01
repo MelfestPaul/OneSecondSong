@@ -17,16 +17,19 @@ function getAccessToken() {
 
     if (accessToken) {
         console.log("✅ Access Token erhalten:", accessToken);
-        localStorage.setItem("spotify_access_token", accessToken); // Speichern
-        window.history.pushState({}, document.title, window.location.pathname); // Token aus der URL entfernen
+        localStorage.setItem("spotify_access_token", accessToken);
+        window.history.pushState({}, document.title, window.location.pathname);
     } else {
-        accessToken = localStorage.getItem("spotify_access_token"); // Falls vorhanden, aus dem Speicher laden
+        accessToken = localStorage.getItem("spotify_access_token");
         if (!accessToken) {
             const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user-read-playback-state user-modify-playback-state`;
             window.location.href = authUrl;
+        } else {
+            console.log("✅ Access Token aus localStorage geladen:", accessToken);
         }
     }
 }
+
 
 
 // 2️⃣ **Spotify Web Playback SDK initialisieren**
@@ -39,10 +42,8 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     player.addListener("ready", ({ device_id }) => {
         console.log("✅ Player ist bereit, Device ID:", device_id);
         deviceId = device_id;
-        // Gerät übertragen
         transferPlayback();
-        // Button aktivieren, da der Player jetzt bereit ist
-        document.getElementById("playButton").disabled = false;
+        document.getElementById("playButton").disabled = false; // Button aktivieren
     });
     
 
@@ -85,6 +86,7 @@ async function getRandomSong() {
 
 // 5️⃣ **Song für eine Sekunde abspielen**
 async function playOneSecond() {
+    console.log("playOneSecond() wird aufgerufen.");
     if (!deviceId) {
         console.error("❌ Fehler: Player noch nicht bereit! Bitte warte, bis der Player initialisiert ist.");
         return;
@@ -116,7 +118,10 @@ async function playOneSecond() {
 
 
 // Event-Listener für den Button
-document.getElementById("playButton").addEventListener("click", playOneSecond);
+document.getElementById("playButton").addEventListener("click", () => {
+    console.log("Button geklickt!");
+    playOneSecond();
+});
 
 // 6️⃣ **Beim Laden der Seite Token abrufen**
 getAccessToken();
