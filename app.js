@@ -133,20 +133,14 @@ async function playOneSecond() {
 // 5. Event-Listener für den Button
 playButton.addEventListener("click", () => {
   console.log("🎵 Play-Button wurde geklickt!");
+  revealButton.textContent = none;
   playOneSecond();
 });
 
 // **🎵 Auflösen/Auflösung verstecken**
 revealButton.addEventListener("click", () => {
     console.log("✔️❌❔ Reveal-Button wurde geklickt!");
-    if (songInfo.style.display === "none") {
-        songInfo.style.display = "block";
-        songInfo.textContent = `${currentTrack.artists.map(a => a.name).join(", ")} von ${currentTrack.name}`;
-        revealButton.textContent = "Auflösung verstecken";
-    } else {
-        songInfo.style.display = "none";
-        revealButton.textContent = "Auflösung";
-    }
+    revealButton.textContent = "auflösen";
 });
 
 // 6. Beim Laden der Seite den Access Token abrufen
