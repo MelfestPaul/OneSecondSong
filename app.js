@@ -11,7 +11,7 @@ const songInfo = document.getElementById("songInfo");
 const durationSlider = document.getElementById("durationSlider");
 const durationLabel = document.getElementById("durationLabel");
 const playingTime = document.getElementById("playingTime");
-playingTime.textContent = `$1 second(s)`;
+playingTime.textContent = `1 second(s)`;
 
 // 1. Spotify Authentifizierung (Implicit Grant Flow)
 function getAccessToken() {
@@ -87,9 +87,11 @@ async function getRandomSong() {
 }
 
 // 4. Song kurz abspielen
-async function playOneSecond(track) {
+async function playOneSecond(again) {
   const deviceId = await getActiveDeviceId();
   if (!deviceId) return;
+  
+  if(!again) track = await getRandomSong();
   if (!track) return;
   
   console.log(`🎵 Versuche, ${track.name} zu spielen auf Gerät ${deviceId}...`);
@@ -142,13 +144,12 @@ durationSlider.addEventListener("input", () => {
 playButton.addEventListener("click", () => {
   console.log("🎵 Play-Button wurde geklickt!");
   songInfo.textContent = ``;
-  track = getRandomSong();
-  playOneSecond();
+  playOneSecond(false);
 });
 
 againButton.addEventListener("click", () => {
     console.log("🎵 Again-Button wurde geklickt!");
-    playOneSecond();
+    playOneSecond(true);
   });
 
 // **🎵 Auflösen/Auflösung verstecken**
