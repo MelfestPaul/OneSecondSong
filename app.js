@@ -140,7 +140,7 @@ playButton.addEventListener("click", () => {
 // **🎵 Auflösen/Auflösung verstecken**
 revealButton.addEventListener("click", () => {
     console.log("✔️❌❔ Reveal-Button wurde geklickt!");
-    revealButton.textContent = "Lösung";
+    revealButton.textContent = "Solution";
 });
 
 // 6. Beim Laden der Seite den Access Token abrufen
