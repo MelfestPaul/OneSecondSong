@@ -24,7 +24,7 @@ function getAccessToken() {
   if (token) {
     accessToken = token;
     // Speichern, damit auch nach Reload der Token verfügbar ist
-    localStorage.setItem("spotify_access_token", accessToken);
+    //localStorage.setItem("spotify_access_token", accessToken);
     // URL bereinigen
     window.history.pushState({}, document.title, window.location.pathname);
     console.log("✅ Access Token erhalten:", accessToken);
@@ -176,7 +176,6 @@ playlist.addEventListener("change", () => {
 
 // 5. Event-Listener für den Button
 playButton.addEventListener("click", () => {
-    playingTime.textContent = playlistId;
   console.log("🎵 Play-Button wurde geklickt!");
   songInfo.textContent = ``;
   playOneSecond(false);
