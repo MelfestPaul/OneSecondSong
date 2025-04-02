@@ -24,13 +24,13 @@ function getAccessToken() {
   if (token) {
     accessToken = token;
     // Speichern, damit auch nach Reload der Token verfügbar ist
-    //localStorage.setItem("spotify_access_token", accessToken);
+    //localStorage.setItem("spotify_access_token", accessToken); TODO
     // URL bereinigen
     window.history.pushState({}, document.title, window.location.pathname);
     console.log("✅ Access Token erhalten:", accessToken);
   } else {
     // Falls schon ein Token im localStorage vorhanden ist, verwende diesen
-    accessToken = localStorage.getItem("spotify_access_token");
+    //accessToken = localStorage.getItem("spotify_access_token"); TODO
     if (!accessToken) {
       // Weiterleiten zur Spotify-Autorisierung
       const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user-read-playback-state%20user-modify-playback-state`;
