@@ -3,6 +3,8 @@ const redirectUri = "https://melfestpaul.github.io/OneSecondSong/";
 let playlistId = "3pVznEeaCmjbDqjjuOuAOO"; 
 let accessToken;
 let track;
+let playlistChanged = true;
+let playlistLength;
 
 const playlist = document.getElementById("playlist");
 const playButton = document.getElementById("playButton");
@@ -66,7 +68,7 @@ async function getActiveDeviceId() {
   }
 }
 
-async function getPlaylistTrackCount() {
+async function getPlaylistLength() {
   let totalTracks = 0;
   let url = `https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=100`;
 
@@ -120,8 +122,10 @@ async function getTrackAtIndex(index) {
 // 3. Hole zufälligen Song aus der Playlist
 async function getRandomSong() {
   console.log("📀 Hole einen zufälligen Song aus der Playlist...");
-  const playlistTrackCount = await getPlaylistTrackCount();
-  return await getTrackAtIndex(Math.floor(Math.random() * playlistTrackCount));
+  if(playlistChanged)
+    playlistLength = await getPlaylistLength();
+  playlistChanged = false;
+  return await getTrackAtIndex(Math.floor(Math.random() * playlistLength));
 
   try {
     console.log("📀 Hole einen zufälligen Song aus der Playlist...");
@@ -198,6 +202,7 @@ durationSlider.addEventListener("input", () => {
 
 // Playlist aktualisieren
 playlist.addEventListener("change", () => {
+    playlistChanged = true;
     var text = playlist.options[playlist.selectedIndex].text;
     switch (text) {
         case "Eurovision 2025":
