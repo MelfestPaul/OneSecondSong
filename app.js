@@ -66,6 +66,28 @@ async function getActiveDeviceId() {
   }
 }
 
+//TEST
+async function getPlaylistTrackCount(playlistId) {
+  let totalTracks = 0;
+  let url = `https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=100`;
+
+  while (url) {
+      const response = await fetch(url, {
+          headers: { 'Authorization': `Bearer ${accessToken}` }
+      });
+      
+      if (!response.ok) {
+          throw new Error(`Fehler: ${response.status} - ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      totalTracks += data.items.length;
+      url = data.next; // URL für die nächste Seite, falls vorhanden
+  }
+
+  return totalTracks;
+}
+
 // 3. Hole zufälligen Song aus der Playlist
 async function getRandomSong() {
   try {
@@ -77,7 +99,6 @@ async function getRandomSong() {
     const data = await response.json();
     const tracks = data.items.map(item => item.track);
     console.log(`✅ ${tracks.length} Songs gefunden.`);
-    console.log(`Quatsch, ${data.tracks.total} Songs gefunden.`);
     const song = tracks[Math.floor(Math.random() * tracks.length)];
     console.log(`🎶 Zufälliger Song: ${song?.name || "Kein Song gefunden"}`);
     return song;
@@ -199,3 +220,6 @@ revealButton.addEventListener("click", () => {
 
 // 6. Beim Laden der Seite den Access Token abrufen
 getAccessToken();
+getPlaylistTrackCount(playlistId)
+    .then(count => console.log(`Gesamtanzahl der Lieder: ${count}`))
+    .catch(error => console.error(error));
