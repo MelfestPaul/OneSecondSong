@@ -1,6 +1,6 @@
 const clientId = "4c0f7f2072cd4c4291ea5e75a4b90e99";
 const redirectUri = "https://melfestpaul.github.io/OneSecondSong/"; 
-let playlistId = "4GRdso2zaUDKossAfv9ZYk"; 
+let playlistId = "3pVznEeaCmjbDqjjuOuAOO"; 
 let accessToken;
 let track;
 
