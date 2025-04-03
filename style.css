@@ -8,30 +8,25 @@ body {
     text-align: center;
   }
   
-  /* Flex-Container für Reordering */
+  /* Container zentriert und responsiv */
   .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     max-width: 500px;
     margin: 0 auto;
     padding: 40px 20px;
     box-sizing: border-box;
   }
   
-  /* Überschrift mit besonderem Hintergrund */
+  /* Hervorgehobene Überschrift mit halbtransparentem Hintergrund */
   h1 {
-    order: 1;
     background-color: rgba(255, 255, 255, 0.2);
     padding: 10px 20px;
     border-radius: 10px;
-    font-size: 2.5rem; /* Beibehaltung der Größe, aber optisch abgehoben */
+    font-size: 2.5rem;
     margin-bottom: 20px;
   }
   
-  /* Playlist Select */
-  #playlist {
-    order: 2;
+  /* Dropdown Styling */
+  select#playlist {
     width: 100%;
     max-width: 300px;
     padding: 10px;
@@ -40,10 +35,8 @@ body {
     margin-bottom: 20px;
   }
   
-  /* Buttons für Play und Replay */
-  #playButton,
-  #againButton {
-    order: 3;
+  /* Gemeinsames Styling für alle Buttons */
+  button {
     background-color: white;
     color: #1DB954;
     font-size: 1rem;
@@ -57,16 +50,12 @@ body {
     transition: background-color 0.3s ease;
   }
   
-  #playButton:hover,
-  #againButton:hover {
+  button:hover {
     background-color: #1ed760;
   }
   
-  /* Steuerung: Slider für playing time */
+  /* Steuerung: Slider und zugehöriger Bereich */
   #controls {
-    order: 4;
-    width: 100%;
-    text-align: center;
     margin: 20px 0;
   }
   
@@ -75,62 +64,34 @@ body {
     max-width: 300px;
   }
   
-  /* Paragraph, der playing time anzeigt (zweiter p-Tag in .container) */
-  .container p:nth-of-type(2) {
-    order: 5;
+  /* Playing Time Ausgabe */
+  #playingTime {
     font-weight: bold;
-    margin: 10px 0;
   }
   
-  /* Reveal-Button und Songinfo sollen unter dem playing time-Bereich erscheinen */
-  #revealButton,
+  /* Songinfo Styling */
   #songInfo {
-    order: 6;
-    width: 100%;
-    max-width: 300px;
-    margin: 10px 0;
+    margin-top: 20px;
+    font-size: 1.1rem;
   }
   
-  /* Zusätzliche Styling für den Reveal-Button */
-  #revealButton {
-    background-color: white;
-    color: #1DB954;
-    font-size: 1rem;
-    border: none;
-    padding: 15px 0;
-    cursor: pointer;
-    border-radius: 10px;
-    transition: background-color 0.3s ease;
-  }
-  
-  #revealButton:hover {
-    background-color: #1ed760;
-  }
-  
-  /* Mobile Responsiveness für iPhone */
+  /* Responsive Anpassungen für kleinere Bildschirme (z. B. iPhone) */
   @media (max-width: 375px) {
     .container {
       padding: 20px 10px;
     }
-  
+    
     h1 {
       font-size: 2rem;
     }
-  
-    #playButton,
-    #againButton,
-    #revealButton {
+    
+    button {
       font-size: 0.9rem;
       padding: 12px 0;
     }
-  
-    .container p:nth-of-type(2) {
+    
+    #songInfo {
       font-size: 1rem;
     }
-  }
-  
-  /* Optional: Br-Elemente ausblenden, falls sie das Layout stören */
-  br {
-    display: none;
   }
   
