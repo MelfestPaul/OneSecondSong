@@ -66,8 +66,7 @@ async function getActiveDeviceId() {
   }
 }
 
-//TEST
-async function getPlaylistTrackCount(playlistId) {
+async function getPlaylistTrackCount() {
   let totalTracks = 0;
   let url = `https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=100`;
 
@@ -88,8 +87,42 @@ async function getPlaylistTrackCount(playlistId) {
   return totalTracks;
 }
 
+async function getTrackAtIndex(index) {
+  if (index < 0) {
+      throw new Error("Index muss 0 oder größer sein");
+  }
+  
+  let url = `${SPOTIFY_API_URL}${playlistId}/tracks?limit=100`;
+  let offset = 0;
+  
+  while (url) {
+      const response = await fetch(`${SPOTIFY_API_URL}${playlistId}/tracks?limit=100&offset=${offset}`, {
+          headers: { 'Authorization': `Bearer ${ACCESS_TOKEN}` }
+      });
+      
+      if (!response.ok) {
+          throw new Error(`Fehler: ${response.status} - ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      if (index < offset + data.items.length) {
+          return data.items[index - offset].track;
+      }
+      
+      if (!data.next) {
+          throw new Error("Index außerhalb der Playlist-Grenzen");
+      }
+      
+      offset += 100;
+  }
+}
+
 // 3. Hole zufälligen Song aus der Playlist
 async function getRandomSong() {
+  console.log("📀 Hole einen zufälligen Song aus der Playlist...");
+  const playlistTrackCount = getPlaylistTrackCount();
+  return getTrackAtIndex(Math.floor(Math.random() * playlistTrackCount));
+
   try {
     console.log("📀 Hole einen zufälligen Song aus der Playlist...");
     const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
@@ -220,6 +253,3 @@ revealButton.addEventListener("click", () => {
 
 // 6. Beim Laden der Seite den Access Token abrufen
 getAccessToken();
-getPlaylistTrackCount(playlistId)
-    .then(count => console.log(`Gesamtanzahl der Lieder: ${count}`))
-    .catch(error => console.error(error));
