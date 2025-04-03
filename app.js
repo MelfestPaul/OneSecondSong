@@ -92,12 +92,12 @@ async function getTrackAtIndex(index) {
       throw new Error("Index muss 0 oder größer sein");
   }
   
-  let url = `${SPOTIFY_API_URL}${playlistId}/tracks?limit=100`;
+  let url = `https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=100`;
   let offset = 0;
   
   while (url) {
-      const response = await fetch(`${SPOTIFY_API_URL}${playlistId}/tracks?limit=100&offset=${offset}`, {
-          headers: { 'Authorization': `Bearer ${ACCESS_TOKEN}` }
+      const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=100&offset=${offset}`, {
+          headers: { 'Authorization': `Bearer ${accessToken}` }
       });
       
       if (!response.ok) {
