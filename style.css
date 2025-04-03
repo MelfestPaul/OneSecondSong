@@ -54,6 +54,13 @@ body {
     background-color: #1ed760;
   }
   
+  /* Verhindern, dass Buttons nach dem Drücken gedrückt bleiben */
+  button:active,
+  button:focus {
+    outline: none;
+    transform: none;
+  }
+  
   /* Steuerung: Slider und zugehöriger Bereich */
   #controls {
     margin: 20px 0;
