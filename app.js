@@ -193,7 +193,7 @@ againButton.addEventListener("click", () => {
 revealButton.addEventListener("click", () => {
     console.log("✔️❌❔ Reveal-Button wurde geklickt!");
     songInfo.style.display = "block";
-    songInfo.textContent = `${track.name} von ${track.artists.map(a => a.name).join(", ")}`;
+    songInfo.textContent = `${track.artists.map(a => a.name).join(", ")} - ${track.name}`;
 });
 
 // 6. Beim Laden der Seite den Access Token abrufen
