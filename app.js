@@ -86,6 +86,7 @@ async function getPlaylistLength() {
       url = data.next; // URL für die nächste Seite, falls vorhanden
   }
 
+  console.log(`✅ ${totalTracks} Songs gefunden.`);
   return totalTracks;
 }
 
@@ -122,6 +123,7 @@ async function getTrackAtIndex(index) {
 // 3. Hole zufälligen Song aus der Playlist
 async function getRandomSong() {
   console.log("📀 Hole einen zufälligen Song aus der Playlist...");
+  console.log(`PlaylistChanged = ${playlistChanged}`);
   if(playlistChanged)
     playlistLength = await getPlaylistLength();
   playlistChanged = false;
