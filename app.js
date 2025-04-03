@@ -30,7 +30,7 @@ function getAccessToken() {
     // URL bereinigen
     window.history.pushState({}, document.title, window.location.pathname);
     console.log("✅ Access token retrieved:", accessToken);
-  } else 
+  } else {
     if (!accessToken) {
       // Weiterleiten zur Spotify-Autorisierung
       const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user-read-playback-state%20user-modify-playback-state`;
