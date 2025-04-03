@@ -127,7 +127,8 @@ async function getRandomSong() {
   if(playlistChanged)
     playlistLength = await getPlaylistLength();
   playlistChanged = false;
-  return await getTrackAtIndex(Math.floor(Math.random() * playlistLength));
+  track = await getTrackAtIndex(Math.floor(Math.random() * playlistLength));
+  return track;
 
   try {
     console.log("📀 Hole einen zufälligen Song aus der Playlist...");
