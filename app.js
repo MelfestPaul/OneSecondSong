@@ -77,6 +77,7 @@ async function getRandomSong() {
     const data = await response.json();
     const tracks = data.items.map(item => item.track);
     console.log(`✅ ${tracks.length} Songs gefunden.`);
+    console.log(`Quatsch, ${data.tracks.total} Songs gefunden.`);
     const song = tracks[Math.floor(Math.random() * tracks.length)];
     console.log(`🎶 Zufälliger Song: ${song?.name || "Kein Song gefunden"}`);
     return song;
