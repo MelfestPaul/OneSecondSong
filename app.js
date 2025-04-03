@@ -160,6 +160,7 @@ async function playOneSecond(again) {
   console.log(`🎵 Versuche, ${track.name} zu spielen auf Gerät ${deviceId}...`);
   
   // Starte die Wiedergabe des Tracks auf dem aktiven Gerät
+  songInfo.textContent = ``;
   try {
     const playResponse = await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
       method: "PUT",
@@ -243,12 +244,13 @@ playlist.addEventListener("change", () => {
 // 5. Event-Listener für den Button
 playButton.addEventListener("click", () => {
   console.log("🎵 Play-Button wurde geklickt!");
-  songInfo.textContent = ``;
+  songInfo.textContent = `choosing a random song...`;
   playOneSecond(false);
 });
 
 againButton.addEventListener("click", () => {
     console.log("🎵 Again-Button wurde geklickt!");
+    songInfo.textContent = `choosing a random song...`;
     playOneSecond(true);
 });
 
