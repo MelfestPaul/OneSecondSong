@@ -29,16 +29,14 @@ function getAccessToken() {
     //localStorage.setItem("spotify_access_token", accessToken); TODO
     // URL bereinigen
     window.history.pushState({}, document.title, window.location.pathname);
-    console.log("✅ Access Token erhalten:", accessToken);
-  } else {
-    // Falls schon ein Token im localStorage vorhanden ist, verwende diesen
-    //accessToken = localStorage.getItem("spotify_access_token"); TODO
+    console.log("✅ Access token retrieved:", accessToken);
+  } else 
     if (!accessToken) {
       // Weiterleiten zur Spotify-Autorisierung
       const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user-read-playback-state%20user-modify-playback-state`;
       window.location.href = authUrl;
     } else {
-      console.log("✅ Access Token aus localStorage:", accessToken);
+      console.log("✅ Access token from localStorage:", accessToken);
     }
   }
 }
@@ -54,16 +52,16 @@ async function getActiveDeviceId() {
     // Wähle das erste verfügbare Gerät, das online ist
     const activeDevice = data.devices.find(device => device.is_active || device.type === "Smartphone" || device.type === "Computer");
     if (activeDevice) {
-      console.log("✅ Aktives Gerät gefunden:", activeDevice.id, activeDevice.name);
+      console.log("✅ Active device found:", activeDevice.id, activeDevice.name);
       return activeDevice.id;
     } else {
-      console.error("❌ Kein aktives Gerät gefunden. Stelle sicher, dass deine Spotify-App läuft und aktiv ist.");
-      songInfo.innerText = "❌ Kein aktives Gerät gefunden. Öffne Spotify!";
+      console.error("❌ No active device found. Please ensure that your Spotify app is running and active.");
+      songInfo.innerText = "❌ No active device found. Open Spotify!";
       return null;
     }
   } catch (error) {
-    console.error("❌ Fehler beim Abrufen der Geräte:", error);
-    songInfo.innerText = "❌ Fehler beim Abrufen der Geräte.";
+    console.error("❌ Error retrieving devices:", error);
+    songInfo.innerText = "❌ Error retrieving devices.";
     return null;
   }
 }
@@ -86,13 +84,13 @@ async function getPlaylistLength() {
       url = data.next; // URL für die nächste Seite, falls vorhanden
   }
 
-  console.log(`✅ ${totalTracks} Songs gefunden.`);
+  console.log(`✅ ${totalTracks} songs found.`);
   return totalTracks;
 }
 
 async function getTrackAtIndex(index) {
   if (index < 0) {
-      throw new Error("Index muss 0 oder größer sein");
+      throw new Error("Index must be 0 or greater");
   }
   
   let url = `https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=100`;
@@ -113,7 +111,7 @@ async function getTrackAtIndex(index) {
       }
       
       if (!data.next) {
-          throw new Error("Index außerhalb der Playlist-Grenzen");
+          throw new Error("Index out of playlist bounds");
       }
       
       offset += 100;
@@ -122,31 +120,13 @@ async function getTrackAtIndex(index) {
 
 // 3. Hole zufälligen Song aus der Playlist
 async function getRandomSong() {
-  console.log("📀 Hole einen zufälligen Song aus der Playlist...");
+  console.log("📀 Fetching a random song from the playlist...");
   console.log(`PlaylistChanged = ${playlistChanged}`);
   if(playlistChanged)
     playlistLength = await getPlaylistLength();
   playlistChanged = false;
   track = await getTrackAtIndex(Math.floor(Math.random() * playlistLength));
   return track;
-
-  try {
-    console.log("📀 Hole einen zufälligen Song aus der Playlist...");
-    const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
-      headers: { "Authorization": `Bearer ${accessToken}` }
-    });
-    if (!response.ok) throw new Error("❌ Fehler beim Laden der Playlist");
-    const data = await response.json();
-    const tracks = data.items.map(item => item.track);
-    console.log(`✅ ${tracks.length} Songs gefunden.`);
-    const song = tracks[Math.floor(Math.random() * tracks.length)];
-    console.log(`🎶 Zufälliger Song: ${song?.name || "Kein Song gefunden"}`);
-    return song;
-  } catch (error) {
-    console.error(error);
-    songInfo.innerText = "❌ Fehler beim Laden der Playlist.";
-    return null;
-  }
 }
 
 // 4. Song kurz abspielen
@@ -157,7 +137,7 @@ async function playOneSecond(again) {
   if(!again) track = await getRandomSong();
   if (!track) return;
   
-  console.log(`🎵 Versuche, ${track.name} zu spielen auf Gerät ${deviceId}...`);
+  console.log(`🎵 Trying to play ${track.name} on device ${deviceId}...`);
   
   // Starte die Wiedergabe des Tracks auf dem aktiven Gerät
   songInfo.textContent = ``;
@@ -171,13 +151,13 @@ async function playOneSecond(again) {
       body: JSON.stringify({ uris: [track.uri], position_ms: 0 })
     });
     if (playResponse.status === 204) {
-      console.log("✅ Song gestartet!");
+      console.log("✅ Song started!");
     } else {
-      console.error("❌ Fehler beim Starten der Wiedergabe:", playResponse.status);
+      console.error("❌ Error while starting playback:", playResponse.status);
     }
   } catch (err) {
-    console.error("❌ Fehler beim Starten der Wiedergabe:", err);
-    songInfo.innerText = "❌ Fehler beim Starten der Wiedergabe.";
+    console.error("❌ Error while starting playback:", err);
+    songInfo.innerText = "❌ Error while starting playback.";
     return;
   }
   
@@ -189,12 +169,12 @@ async function playOneSecond(again) {
         headers: { "Authorization": `Bearer ${accessToken}` }
       });
       if (pauseResponse.status === 204) {
-        console.log("⏸ Song pausiert!");
+        console.log("⏸ Song paused!");
       } else {
-        console.error("❌ Fehler beim Pausieren:", pauseResponse.status);
+        console.error("❌ Error while pausing:", pauseResponse.status);
       }
     } catch (err) {
-      console.error("❌ Fehler beim Pausieren:", err);
+      console.error("❌ Error while pausing:", err);
     }
   }, durationSlider.value * 1000);
 }
@@ -243,20 +223,19 @@ playlist.addEventListener("change", () => {
 
 // 5. Event-Listener für den Button
 playButton.addEventListener("click", () => {
-  console.log("🎵 Play-Button wurde geklickt!");
+  console.log("🎵 play-button was clicked!");
   songInfo.textContent = `choosing a random song...`;
   playOneSecond(false);
 });
 
 againButton.addEventListener("click", () => {
-    console.log("🎵 Again-Button wurde geklickt!");
-    songInfo.textContent = `choosing a random song...`;
+    console.log("🎵 again-button was clicked!");
     playOneSecond(true);
 });
 
 // **🎵 Auflösen/Auflösung verstecken**
 revealButton.addEventListener("click", () => {
-    console.log("✔️❌❔ Reveal-Button wurde geklickt!");
+    console.log("✔️❌❔ reveal-button was clicked!");
     songInfo.style.display = "block";
     songInfo.textContent = `${track.artists.map(a => a.name).join(", ")} - ${track.name}`;
 });
