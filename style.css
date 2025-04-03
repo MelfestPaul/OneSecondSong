@@ -1,37 +1,84 @@
-/* Grundlegendes Styling für den Body */
+/* Basis-Styling */
 body {
-    font-family: Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background-color: #1DB954; /* Spotify-Grün */
     color: white;
-    text-align: center;
     margin: 0;
     padding: 0;
-}
-
-.container {
-    padding: 50px;
-}
-
-h1 {
-    font-size: 36px;
+    text-align: center;
+  }
+  
+  /* Container mittig und responsiv ausrichten */
+  .container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    box-sizing: border-box;
+  }
+  
+  /* Überschrift anpassen */
+  h1 {
+    font-size: 2.5rem; /* ca. 36px */
     margin-bottom: 20px;
-}
-
-button {
+  }
+  
+  /* Buttons – groß, bequem und responsive */
+  button {
     background-color: white;
     color: #1DB954;
-    font-size: 20px;
+    font-size: 1rem;
     border: none;
-    padding: 10px 20px;
+    padding: 15px 0;
+    margin: 10px 0;
+    width: 100%;
+    max-width: 300px;
     cursor: pointer;
-    border-radius: 5px;
-}
-
-button:hover {
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
     background-color: #1ed760;
-}
-
-#songInfo {
+  }
+  
+  /* Song-Info Bereich */
+  #songInfo {
     margin-top: 20px;
-    font-size: 18px;
-}
+    font-size: 1.1rem;
+  }
+  
+  /* Steuerungsbereich (Slider) */
+  #controls {
+    margin: 20px 0;
+  }
+  
+  input[type="range"] {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  /* Ausgabe des aktuellen Werts */
+  output#playingTime {
+    font-weight: bold;
+  }
+  
+  /* Media Query: Optimierung für kleinere iPhone-Bildschirme */
+  @media (max-width: 375px) {
+    .container {
+      padding: 20px 10px;
+    }
+  
+    h1 {
+      font-size: 2rem;
+    }
+  
+    button {
+      font-size: 0.9rem;
+      padding: 12px 0;
+    }
+  
+    #songInfo {
+      font-size: 1rem;
+    }
+  }
+  
