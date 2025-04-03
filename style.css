@@ -48,17 +48,22 @@ body {
     cursor: pointer;
     border-radius: 10px;
     transition: background-color 0.3s ease;
+    /* iOS-spezifisch: Verhindern des "Einfahrens" */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
   }
   
+  /* Hover-Zustand */
   button:hover {
     background-color: #1ed760;
   }
   
-  /* Verhindern, dass Buttons nach dem Drücken gedrückt bleiben */
+  /* Entferne den Fokus-/Active-Effekt */
   button:active,
   button:focus {
     outline: none;
-    transform: none;
+    box-shadow: none;
+    background-color: white;
   }
   
   /* Steuerung: Slider und zugehöriger Bereich */
