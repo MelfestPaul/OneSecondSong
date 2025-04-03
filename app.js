@@ -120,8 +120,8 @@ async function getTrackAtIndex(index) {
 // 3. Hole zufälligen Song aus der Playlist
 async function getRandomSong() {
   console.log("📀 Hole einen zufälligen Song aus der Playlist...");
-  const playlistTrackCount = getPlaylistTrackCount();
-  return getTrackAtIndex(Math.floor(Math.random() * playlistTrackCount));
+  const playlistTrackCount = await getPlaylistTrackCount();
+  return await getTrackAtIndex(Math.floor(Math.random() * playlistTrackCount));
 
   try {
     console.log("📀 Hole einen zufälligen Song aus der Playlist...");
