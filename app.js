@@ -171,6 +171,9 @@ playlist.addEventListener("change", () => {
             break;
         case "Preselections":
             playlistId = "2j5dnS9rSf4hxOhfTn3ZtH";
+            break;
+        case "Individual":
+            playlistId = "5Abi47HRV71THt5C39hz2K";
       }
 });
 
