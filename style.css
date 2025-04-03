@@ -8,7 +8,7 @@ body {
     text-align: center;
   }
   
-  /* Container mittig und responsiv ausrichten */
+  /* Container zentriert und responsiv */
   .container {
     max-width: 500px;
     margin: 0 auto;
@@ -16,13 +16,26 @@ body {
     box-sizing: border-box;
   }
   
-  /* Überschrift anpassen */
+  /* Hervorgehobene Überschrift mit halbtransparentem Hintergrund */
   h1 {
-    font-size: 2.5rem; /* ca. 36px */
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 2.5rem;
     margin-bottom: 20px;
   }
   
-  /* Buttons – groß, bequem und responsive */
+  /* Dropdown Styling */
+  select#playlist {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    margin-bottom: 20px;
+  }
+  
+  /* Gemeinsames Styling für alle Buttons */
   button {
     background-color: white;
     color: #1DB954;
@@ -41,13 +54,7 @@ body {
     background-color: #1ed760;
   }
   
-  /* Song-Info Bereich */
-  #songInfo {
-    margin-top: 20px;
-    font-size: 1.1rem;
-  }
-  
-  /* Steuerungsbereich (Slider) */
+  /* Steuerung: Slider und zugehöriger Bereich */
   #controls {
     margin: 20px 0;
   }
@@ -57,28 +64,33 @@ body {
     max-width: 300px;
   }
   
-  /* Ausgabe des aktuellen Werts */
-  output#playingTime {
+  /* Playing Time Ausgabe */
+  #playingTime {
     font-weight: bold;
   }
   
-  /* Media Query: Optimierung für kleinere iPhone-Bildschirme */
+  /* Songinfo Styling */
+  #songInfo {
+    margin-top: 20px;
+    font-size: 1.1rem;
+  }
+  
+  /* Responsive Anpassungen für kleinere Bildschirme (z. B. iPhone) */
   @media (max-width: 375px) {
     .container {
       padding: 20px 10px;
     }
-  
+    
     h1 {
       font-size: 2rem;
     }
-  
+    
     button {
       font-size: 0.9rem;
       padding: 12px 0;
     }
-  
+    
     #songInfo {
       font-size: 1rem;
     }
-  }
-  
+  }  
