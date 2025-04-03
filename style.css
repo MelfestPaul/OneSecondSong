@@ -50,7 +50,7 @@ body {
     transition: background-color 0.3s ease;
   }
   
-  button:hover {
+  button:active {
     background-color: #1ed760;
   }
   
