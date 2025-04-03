@@ -59,8 +59,7 @@ body {
   }
   
   /* Entferne den Fokus-/Active-Effekt */
-  button:active,
-  button:focus {
+  button:active {
     outline: none;
     box-shadow: none;
     background-color: white;
