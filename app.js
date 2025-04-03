@@ -56,7 +56,7 @@ async function getActiveDeviceId() {
       return activeDevice.id;
     } else {
       console.error("❌ No active device found. Please ensure that your Spotify app is running and active.");
-      songInfo.innerText = "❌ No active device found. Open Spotify!";
+      songInfo.innerText = "❌ No active device found. Please open Spotify!";
       return null;
     }
   } catch (error) {
